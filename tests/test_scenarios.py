@@ -114,7 +114,7 @@ class TestCarServiceScenarios:
 
         self._fill_initial_data(service, car_data, model_data)
 
-        assert True
+        assert service.get_car_info(car_data[0].vin) is not None
 
     def test_sell_car(self, tmpdir: str, car_data: list[Car], model_data: list[Model]) -> None:
         service = CarService(tmpdir)
@@ -140,7 +140,7 @@ class TestCarServiceScenarios:
 
         available_cars = [car for car in car_data if car.status == CarStatus.available]
 
-        assert service.get_cars(CarStatus.available) == available_cars
+        assert service.get_cars(CarStatus.available) == sorted(available_cars, key=lambda car: car.vin)
 
     def test_list_full_info_by_vin(self, tmpdir: str, car_data: list[Car], model_data: list[Model]):
         service = CarService(tmpdir)
