@@ -108,3 +108,16 @@ def test_empty_database(tmp_path):
     assert s.get_cars(CarStatus.available) == []
     assert s.top_models_by_sales() == []
     assert s.get_car_info("missing") is None
+
+def test_output_field_names_match_assignment(service):
+    service.add_car(car('FIELDS'))
+    info = service.get_car_info('FIELDS')
+    assert info.model_name == info.car_model_name == 'Модель ё'
+    assert info.model_brand == info.car_model_brand == 'Марка'
+    assert 'model_name' in info.model_dump()
+    service.sell_car(sale('FIELDS#1', 'FIELDS'))
+    stats = service.top_models_by_sales()[0]
+    assert stats.sales_count == stats.sales_number == 1
+    assert stats.model_dump() == {
+        'car_model_name': 'Модель ё', 'brand': 'Марка', 'sales_count': 1,
+    }
