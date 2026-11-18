@@ -65,7 +65,7 @@ class CarService:
             if sale is None:
                 raise ValueError("Sold car has no sale record")
         return CarFullInfo(
-            vin=car.vin, car_model_name=model.name, car_model_brand=model.brand,
+            vin=car.vin, model_name=model.name, model_brand=model.brand,
             price=car.price, date_start=car.date_start, status=car.status,
             sales_date=sale.sales_date if sale else None,
             sales_cost=sale.cost if sale else None,
@@ -118,6 +118,6 @@ class CarService:
             model = self.models.get(mid)
             result.append(ModelSaleStats(
                 car_model_name=model.name, brand=model.brand,
-                sales_number=counts[mid],
+                sales_count=counts[mid],
             ))
         return result
