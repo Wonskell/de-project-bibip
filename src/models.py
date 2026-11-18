@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from enum import StrEnum
 
-from pydantic import BaseModel
+from pydantic import AliasChoices, BaseModel, Field
 
 
 class CarStatus(StrEnum):
@@ -44,16 +44,29 @@ class Sale(BaseModel):
 
 class CarFullInfo(BaseModel):
     vin: str
-    car_model_name: str
-    car_model_brand: str
+    model_name: str = Field(validation_alias=AliasChoices("model_name", "car_model_name"))
+    model_brand: str = Field(validation_alias=AliasChoices("model_brand", "car_model_brand"))
     price: Decimal
     date_start: datetime
     status: CarStatus
     sales_date: datetime | None
     sales_cost: Decimal | None
 
+    # Compatibility with the names used in the original course template.
+    @property
+    def car_model_name(self) -> str:
+        return self.model_name
+
+    @property
+    def car_model_brand(self) -> str:
+        return self.model_brand
+
 
 class ModelSaleStats(BaseModel):
     car_model_name: str
     brand: str
-    sales_number: int
+    sales_count: int = Field(validation_alias=AliasChoices("sales_count", "sales_number"))
+
+    @property
+    def sales_number(self) -> int:
+        return self.sales_count
